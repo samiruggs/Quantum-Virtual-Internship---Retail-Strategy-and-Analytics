@@ -1,3 +1,5 @@
+--- 1. Upload the data and load the data.
+
 USE [Retail_Stategy_Analytics]
 GO
 
@@ -13,10 +15,13 @@ SELECT [DATE]
 
 GO;
 
+--- 2.  Make a copy of the data in case of future mistakes.
+
     SELECT *
     INTO transaction_data_copy
     FROM QVI_transaction_data;
 
+--- 3. Check for duplicate rows
 
     WITH cte AS (
     SELECT *, ROW_NUMBER() OVER(PARTITION BY 
@@ -33,20 +38,7 @@ GO;
       SELECT * FROM cte
       WHERE rn > 1;
 
-      WITH cte AS (
-    SELECT *, ROW_NUMBER() OVER(PARTITION BY 
-        [DATE]
-      ,[STORE_NBR]
-      ,[LYLTY_CARD_NBR]
-      ,[TXN_ID]
-      ,[PROD_NBR]
-      ,[PROD_NAME]
-      ,[PROD_QTY]
-      ORDER BY [TXN_ID]) AS rn
-      FROM transaction_data_copy
-)
-      SELECT * FROM cte
-      WHERE rn > 1;
+--- 4. Delete the duplicates
 
       WITH cte AS (
     SELECT *, ROW_NUMBER() OVER(PARTITION BY 
@@ -62,6 +54,37 @@ GO;
 )
       DELETE FROM cte
       WHERE rn > 1;
+
+--- 5. Confirm the deleted data
+
+      WITH cte AS (
+    SELECT *, ROW_NUMBER() OVER(PARTITION BY 
+        [DATE]
+      ,[STORE_NBR]
+      ,[LYLTY_CARD_NBR]
+      ,[TXN_ID]
+      ,[PROD_NBR]
+      ,[PROD_NAME]
+      ,[PROD_QTY]
+      ORDER BY [TXN_ID]) AS rn
+      FROM transaction_data_copy
+)
+      SELECT * FROM cte
+      WHERE rn > 1;
+
+
+--- 6. Check for outliers.
+
+SELECT *
+      FROM transaction_data_copy
+      ORDER BY PROD_QTY DESC;	
+
+--- 7. Delete the outliers
+
+DELETE
+      FROM transaction_data_copy
+	  WHERE PROD_NBR = 4
+      ORDER BY PROD_QTY DESC;
 
       SELECT *
       FROM transaction_data_copy
@@ -123,3 +146,4 @@ GO;
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
