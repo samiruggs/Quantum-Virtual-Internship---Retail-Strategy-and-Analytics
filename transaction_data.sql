@@ -168,7 +168,14 @@ WHERE PROD_NAME LIKE 'WW%';
 		FROM transaction_data_copy
 		WHERE PROD_NAME LIKE '%Salsa%'
 
---- 
+--- 16. See the impact of each brand in the market
+
+	SELECT LEFT([PROD_NAME], CHARINDEX(' ', [PROD_NAME] + ' ')-1) AS BRAND,
+	  	   SUM(PROD_QTY) AS TOT_QTY,
+	       SUM(TOT_SALES) AS AGG_SALES
+    FROM transaction_data_copy
+    GROUP BY LEFT([PROD_NAME], CHARINDEX(' ', [PROD_NAME] + ' ')-1);
+
 		
       SELECT *
       FROM transaction_data_copy
@@ -203,6 +210,7 @@ WHERE PROD_NAME LIKE 'WW%';
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
 
 
 
