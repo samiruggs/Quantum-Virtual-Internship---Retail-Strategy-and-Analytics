@@ -116,8 +116,53 @@ DELETE
      ALTER TABLE transaction_data_copy
      ALTER COLUMN TOT_SALES DECIMAL(10,1);
 
---- 14.  
+--- 14.  Standardize the PROD_NAME column
 
+	SELECT PROD_NAME FROM transaction_data_copy
+GROUP BY PROD_NAME
+ORDER BY PROD_NAME;
+  
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'Dorito','Doritos')
+WHERE PROD_NAME LIKE 'Dorito%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'GrnWves','Grain Waves')
+WHERE PROD_NAME LIKE 'GrnWves%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'Infzns','Infuzions')
+WHERE PROD_NAME LIKE 'Infzns%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'NCC','Natural Chip Co')
+WHERE PROD_NAME LIKE 'NCC%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = 
+CASE 
+	WHEN PROD_NAME LIKE 'Natural Chip Co Co%' THEN REPLACE(PROD_NAME,'Natural Chip Co Co','Natural Chip Co')
+	WHEN PROD_NAME LIKE 'Natural Chip CoCo%' THEN REPLACE(PROD_NAME,'Natural Chip CoCo','Natural Chip Co')
+	ELSE PROD_NAME
+END;
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'RRD','Red Rock Deli')
+WHERE PROD_NAME LIKE 'RRD%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'Smithss','Smiths')
+WHERE PROD_NAME LIKE 'Smithss%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'Snbts','Sunbites')
+WHERE PROD_NAME LIKE 'Snbts%';
+
+UPDATE transaction_data_copy
+SET PROD_NAME = REPLACE(PROD_NAME,'WW','Woolworths')
+WHERE PROD_NAME LIKE 'WW%';
+
+--15. 
       SELECT *
       FROM transaction_data_copy
       WHERE STORE_NBR = 1
@@ -151,5 +196,6 @@ DELETE
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
 
 
