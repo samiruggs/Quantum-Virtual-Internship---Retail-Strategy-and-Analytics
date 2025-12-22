@@ -86,38 +86,43 @@ DELETE
 	  WHERE PROD_NBR = 4
       ORDER BY PROD_QTY DESC;
 
+--- 8. Confirm the deletion.
       SELECT *
       FROM transaction_data_copy
       WHERE PROD_NBR = 4 AND PROD_QTY = 200
 
+--- 9. Add a UNIT_COST Column
       ALTER TABLE transaction_data_copy
-      ADD UNIT_COST FLOAT;
+      ADD UNIT_COST DECIMAL(10,2);
+
+--- 10. Confirm the addition
 
        SELECT *
-      FROM transaction_data_copy
+      FROM transaction_data_copy; 
 
+--- 11. Update the table with the UNIT_COST calculation. 
       
-      
-       SELECT *
-      FROM transaction_data_copy
-
-      
-       SELECT *
-      FROM QVI_transaction_data;
-
       UPDATE transaction_data_copy
       SET UNIT_COST = TOT_SALES/NULLIF(PROD_QTY,0)
-      WHERE UNIT_COST = PROD_QTY/NULLIF(TOT_SALES,0);      --- 
+      WHERE UNIT_COST = PROD_QTY/NULLIF(TOT_SALES,0);
+
+--- 12. Confirm the update
+
+	  SELECT *
+      FROM transaction_data_copy; 
+
+--- 13. Change the datatype of the TOT_SALES column to decimal (proper for money)
 
      ALTER TABLE transaction_data_copy
-     ALTER COLUMN TOT_SALES DECIMAL(10,1);       --- change datatype to decimal proper for money
+     ALTER COLUMN TOT_SALES DECIMAL(10,1);
+
+--- 14.  
 
       SELECT *
       FROM transaction_data_copy
       WHERE STORE_NBR = 1
 
-      ALTER TABLE transaction_data_copy
-     ALTER COLUMN UNIT_COST DECIMAL(10,1);       --- change datatype for money
+      
 
      SELECT *
       FROM transaction_data_copy
@@ -146,4 +151,5 @@ DELETE
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
 
