@@ -162,7 +162,14 @@ UPDATE transaction_data_copy
 SET PROD_NAME = REPLACE(PROD_NAME,'WW','Woolworths')
 WHERE PROD_NAME LIKE 'WW%';
 
---15. 
+--15. Delete Salsa Products from the list.
+
+	DELETE 
+		FROM transaction_data_copy
+		WHERE PROD_NAME LIKE '%Salsa%'
+
+--- 
+		
       SELECT *
       FROM transaction_data_copy
       WHERE STORE_NBR = 1
@@ -196,6 +203,7 @@ WHERE PROD_NAME LIKE 'WW%';
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
 
 
 
