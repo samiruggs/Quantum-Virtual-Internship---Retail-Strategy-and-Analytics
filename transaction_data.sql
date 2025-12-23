@@ -361,14 +361,17 @@ SELECT * FROM old_bud;
 --- 31. Preferred stores by the segments
 
 SELECT CONCAT('STORE ',STORE_NBR) AS STORE_NBR,
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
 	   SUM(PROD_QTY) AS TOT_QTY,
 	   SUM(TOT_SALES) AS AGG_SALES
 FROM old_bud
-GROUP BY STORE_NBR;
+GROUP BY STORE_NBR
+ORDER BY TXN_COUNT DESC;
 
 --- 32. Most loyal customer of the segment
 
 SELECT LYLTY_CARD_NBR,
+	   AVG(UNIT_COST) AS AVG_UNIT_COST,
 	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
 	   SUM(PROD_QTY) AS TOT_QTY,
 	   SUM(TOT_SALES) AS AGG_SALES
@@ -376,7 +379,7 @@ FROM old_bud
 GROUP BY LYLTY_CARD_NBR
 ORDER BY [TXN_COUNT] DESC;
 
---- 33. Months purchase pattern for the segment
+--- 33. Months' purchase pattern for the segment
 
 SELECT DATENAME(MONTH,[DATE]) AS [DATE],
 	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
@@ -397,7 +400,7 @@ FROM old_bud
 GROUP BY DATENAME(WEEKDAY,[DATE]),DATEPART(WEEKDAY,[DATE])
 ORDER BY DATEPART(WEEKDAY,[DATE]);
 
---- 35. Most product purchased by segment
+--- 35. Most products purchased by segment
 
 
 SELECT PROD_NAME,
@@ -415,7 +418,7 @@ SELECT LEFT([PROD_NAME],CHARINDEX(' ',[PROD_NAME])-1) AS BRAND,
 	   SUM(PROD_QTY) AS TOT_QTY,
 	   SUM(TOT_SALES) AS AGG_SALES
 FROM old_bud
-GROUP BY PROD_NAME
+GROUP BY LEFT([PROD_NAME],CHARINDEX(' ',[PROD_NAME])-1)
 ORDER BY [TXN_COUNT] DESC;
 
 
@@ -426,6 +429,7 @@ ORDER BY [TXN_COUNT] DESC;
 
 
  
+
 
 
 
