@@ -217,39 +217,32 @@ WHERE PROD_NAME LIKE '%[0-9]%[gG]%';
 	GROUP BY RAW_WEIGHT_CLEANED	
 
 
-      SELECT *
-      FROM transaction_data_copy
-      WHERE STORE_NBR = 1
+--- 20. The Stores with the highest quantity sales (Best Performing Stores)
 
-      
+SELECT STORE_NBR,
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM transaction_data_copy
+GROUP BY STORE_NBR
+ORDER BY TOT_QTY DESC;
 
-     SELECT *
-      FROM transaction_data_copy
-      WHERE PROD_NAME LIKE '%Chip%'   
+---21. The best performing product
 
-       SELECT *
-            INTO chip_data
-            FROM transaction_data_copy
-        WHERE PROD_NAME LIKE '%Chip%' 
+SELECT PROD_NAME,
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM transaction_data_copy
+GROUP BY PROD_NAME
+ORDER BY TOT_QTY DESC;
 
-        
-        
-	INSERT INTO brand_data(brand_id,brand_name)
-	VALUES (1,'Cobs Popd'), 
-		   (2,'Dontus Corn Chips'),
-		   (3,'French Fries'),
-		   (4,'Natural Chip'),
-		   (5,'Smiths'),
-		   (6,'Thins'),
-		   (7,'Tostitos'), 
-		   (8,'WW');
+--- 21 The most loyal customers
 
-	DELETE FROM brand_data
-	WHERE brand_id IS NULL;
-
-	SELECT DISTINCT * 
-	INTO brand_data1
-	FROM brand_data;
+SELECT LYLTY_CARD_NBR,
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM transaction_data_copy
+GROUP BY LYLTY_CARD_NBR
+ORDER BY TOT_QTY DESC;
 
 
 
