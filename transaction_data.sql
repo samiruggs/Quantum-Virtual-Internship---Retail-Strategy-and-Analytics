@@ -345,12 +345,88 @@ SELECT LIFESTAGE,
 GROUP BY LIFESTAGE, PREMIUM_CUSTOMER
 ORDER BY [COUNT] DESC;
 
+--- FOCUS ON OLDER FAMILIES AND BUDGET SEGMENTS.
+
+--- 30. Create a table for the older family and budget segments
+
+SELECT *
+INTO old_bud
+FROM join_data
+WHERE LIFESTAGE = 'OLDER FAMILIES' AND PREMIUM_CUSTOMER = 'Budget'
+
+--- 30. Confirm the table is formed and check for any null values.
+
+SELECT * FROM old_bud;
+
+--- 31. Preferred stores by the segments
+
+SELECT CONCAT('STORE ',STORE_NBR) AS STORE_NBR,
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY STORE_NBR;
+
+--- 32. Most loyal customer of the segment
+
+SELECT LYLTY_CARD_NBR,
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY LYLTY_CARD_NBR
+ORDER BY [TXN_COUNT] DESC;
+
+--- 33. Months purchase pattern for the segment
+
+SELECT DATENAME(MONTH,[DATE]) AS [DATE],
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY DATENAME(MONTH,[DATE]),MONTH([DATE])
+ORDER BY MONTH([DATE]);
+
+--- 34. Day of purchase for the segment
+
+SELECT DATENAME(WEEKDAY,[DATE]) AS [DAY],
+	   DATEPART(WEEKDAY,[DATE]) AS [DATE_PART],
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY DATENAME(WEEKDAY,[DATE]),DATEPART(WEEKDAY,[DATE])
+ORDER BY DATEPART(WEEKDAY,[DATE]);
+
+--- 35. Most product purchased by segment
+
+
+SELECT PROD_NAME,
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY PROD_NAME
+ORDER BY [TXN_COUNT] DESC;
+
+--- 36. brand preference of the segment. 
+
+SELECT LEFT([PROD_NAME],CHARINDEX(' ',[PROD_NAME])-1) AS BRAND,
+	   COUNT(LYLTY_CARD_NBR) as [TXN_COUNT],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES
+FROM old_bud
+GROUP BY PROD_NAME
+ORDER BY [TXN_COUNT] DESC;
+
+
+
 
 
 
 
 
  
+
 
 
 
