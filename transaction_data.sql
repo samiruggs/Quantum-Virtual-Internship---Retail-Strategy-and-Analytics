@@ -244,6 +244,48 @@ FROM transaction_data_copy
 GROUP BY LYLTY_CARD_NBR
 ORDER BY TOT_QTY DESC;
 
+--- 22. Best Performing Months
+
+SELECT DATENAME(MONTH, [DATE]) AS [MONTH],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES,
+	   AVG(TOT_SALES) AS AVG_SALES
+FROM transaction_data_copy
+GROUP BY DATENAME(MONTH, [DATE]),
+		MONTH([DATE])
+ORDER BY MONTH([DATE]);
+
+---23. Best Performing days in December
+
+SELECT 
+		[DATE],
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES,
+	   AVG(TOT_SALES) AS AVG_SALES
+FROM transaction_data_copy
+WHERE MONTH([DATE]) = 12
+GROUP BY [DATE]
+ORDER BY [DATE]
+
+--- 24. Best performing days of the week
+SELECT 
+    DATENAME(WEEKDAY, [DATE]) AS [DAY],
+    DATEPART(WEEKDAY, [DATE]) AS DayNum,
+    SUM(PROD_QTY) AS TOT_QTY,
+    SUM(TOT_SALES) AS AGG_SALES,
+    AVG(TOT_SALES) AS AVG_SALES
+FROM transaction_data_copy
+GROUP BY 
+    DATENAME(WEEKDAY, [DATE]),
+    DATEPART(WEEKDAY, [DATE])
+ORDER BY 
+    DayNum;
+
+--25. Number of loyal customers
+
+SELECT COUNT(DISTINCT LYLTY_CARD_NBR) AS loyalty_count FROM transaction_data_copy;
+
+--- 26. 
 
 
 
