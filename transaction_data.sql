@@ -176,7 +176,47 @@ WHERE PROD_NAME LIKE 'WW%';
     FROM transaction_data_copy
     GROUP BY LEFT([PROD_NAME], CHARINDEX(' ', [PROD_NAME] + ' ')-1);
 
-		
+--- 17. Group the PROD_NAME and extract the Weight(pack size) into a new column with TOT_QTY and AGG_SALES into a new table
+
+	WITH cte AS (
+    SELECT PROD_NAME, SUM(PROD_QTY) AS TOT_QTY, SUM(TOT_SALES) AS AGG_SALES
+    FROM transaction_data_copy
+    GROUP BY PROD_NAME
+)
+SELECT 
+    PROD_NAME,
+        SUBSTRING(
+        PROD_NAME, 
+        PATINDEX('%[0-9]%', PROD_NAME), -- Start at the first digit
+        (LEN(PROD_NAME) - CHARINDEX(' ', REVERSE(PROD_NAME)) + 1) -- End at the last character before the space
+    ) AS RAW_WEIGHT_CLEANED,
+    TOT_QTY,
+    AGG_SALES
+INTO brand_weight
+FROM cte
+WHERE PROD_NAME LIKE '%[0-9]%[gG]%';
+
+--- 18. clean the new table by replacing 'G' with 'g' and others
+
+    SELECT * FROM brand_weight
+
+	UPDATE brand_weight
+	SET RAW_WEIGHT_CLEANED = REPLACE(RAW_WEIGHT_CLEANED, 'G', 'g')
+	WHERE RAW_WEIGHT_CLEANED LIKE '%G';
+
+	UPDATE brand_weight
+	SET RAW_WEIGHT_CLEANED = REPLACE(RAW_WEIGHT_CLEANED, '135g Swt Pot Sea Salt', '135g')
+	WHERE RAW_WEIGHT_CLEANED LIKE '135g Swt Pot Sea Salt';
+
+--- 19. Group the data based on pack size 
+
+	SELECT RAW_WEIGHT_CLEANED,
+	   SUM(TOT_QTY) AS TOT_QTY,
+	   SUM(AGG_SALES) AS TOT_QTY
+	FROM brand_weight
+	GROUP BY RAW_WEIGHT_CLEANED	
+
+
       SELECT *
       FROM transaction_data_copy
       WHERE STORE_NBR = 1
@@ -210,6 +250,7 @@ WHERE PROD_NAME LIKE 'WW%';
 	SELECT DISTINCT * 
 	INTO brand_data1
 	FROM brand_data;
+
 
 
 
