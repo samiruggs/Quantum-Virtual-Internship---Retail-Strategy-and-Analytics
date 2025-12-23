@@ -285,7 +285,26 @@ ORDER BY
 
 SELECT COUNT(DISTINCT LYLTY_CARD_NBR) AS loyalty_count FROM transaction_data_copy;
 
---- 26. 
+--- 26. Combine transaction data with customer behaviour data. send into a new table joined_data
+
+SELECT 
+    t.[DATE],
+    t.STORE_NBR,
+    T.TXN_ID,
+    t.LYLTY_CARD_NBR,  
+    t.PROD_NAME,
+    t.PROD_QTY,
+    t.TOT_SALES,
+    t.UNIT_COST,
+    q.PREMIUM_CUSTOMER,
+    q.LIFESTAGE
+INTO join_data
+FROM transaction_data_copy t
+JOIN QVI_purchase_behaviour q
+    ON t.LYLTY_CARD_NBR = q.LYLTY_CARD_NBR;
+
+--- 27. 
+
 
 
 
