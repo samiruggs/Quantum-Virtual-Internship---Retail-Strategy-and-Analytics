@@ -285,7 +285,7 @@ ORDER BY
 
 SELECT COUNT(DISTINCT LYLTY_CARD_NBR) AS loyalty_count FROM transaction_data_copy;
 
---- 26. Combine transaction data with customer behaviour data. send into a new table joined_data
+--- 26. Join transaction data with customer behaviour data. send into a new table joined_data
 
 SELECT 
     t.[DATE],
@@ -303,7 +303,54 @@ FROM transaction_data_copy t
 JOIN QVI_purchase_behaviour q
     ON t.LYLTY_CARD_NBR = q.LYLTY_CARD_NBR;
 
---- 27. 
+--- 27. The behaviour and stages of loyal customers
+
+SELECT LYLTY_CARD_NBR,
+	   SUM(PROD_QTY) AS TOT_QTY,
+	   SUM(TOT_SALES) AS AGG_SALES,
+	   COUNT(LYLTY_CARD_NBR) AS TXN_COUNT,
+	   LIFESTAGE,
+	   PREMIUM_CUSTOMER
+FROM join_data
+GROUP BY LYLTY_CARD_NBR,LIFESTAGE,PREMIUM_CUSTOMER
+ORDER BY TOT_QTY DESC
+
+--- 28. Distribution of iifestage
+
+  SELECT LIFESTAGE,
+		COUNT(LIFESTAGE) AS [COUNT],
+		SUM(PROD_QTY) AS TOT_QTY,
+SUM(TOT_SALES) AS AGG_SALES
+ FROM join_data
+GROUP BY LIFESTAGE
+ORDER BY [COUNT] DESC;
+
+--- 29. Distribution of PREMIUM_CUSTOMERS
+SELECT PREMIUM_CUSTOMER,
+	   COUNT(PREMIUM_CUSTOMER) AS [COUNT],
+		SUM(PROD_QTY) AS TOT_QTY,
+		SUM(TOT_SALES) AS AGG_SALES
+ FROM join_data
+GROUP BY PREMIUM_CUSTOMER
+ORDER BY [COUNT] DESC;
+
+--- 29 joint distribution
+
+SELECT LIFESTAGE,
+		PREMIUM_CUSTOMER,
+		COUNT(LIFESTAGE) AS [COUNT],
+		SUM(PROD_QTY) AS TOT_QTY,
+		SUM(TOT_SALES) AS AGG_SALES
+ FROM join_data
+GROUP BY LIFESTAGE, PREMIUM_CUSTOMER
+ORDER BY [COUNT] DESC;
+
+
+
+
+
+
+ 
 
 
 
